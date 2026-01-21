@@ -42,3 +42,6 @@ and unique value propositions, and compiles structured results into Google Docs/
 
 - API keys are **not included**
 - Please use your API Keys & Credentials and replace it in the json file.
+
+<img width="885" height="391" alt="image" src="https://github.com/user-attachments/assets/0480e934-2eb4-40c3-ae9b-b5b87648e364" />
+
