@@ -1,0 +1,881 @@
+{
+  "name": "Competitor Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Competitor Analysis",
+        "height": 511.2813260861502,
+        "width": 377.7154173079816
+      },
+      "id": "7ac9823a-f9fd-484b-a8b0-7296f7d74100",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1160,
+        100
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "url",
+        "include": "allOtherFields",
+        "options": {
+          "destinationFieldName": "url"
+        }
+      },
+      "id": "e7d7ebdc-12b4-4ff6-bd66-58bb98110a92",
+      "name": "Results to List",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        260,
+        460
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Step 1. Get Competitors\n",
+        "height": 582.8537144476434,
+        "width": 1128.870960716006,
+        "color": 7
+      },
+      "id": "d942ce55-b7ab-4a57-b8c6-0c6ab18d2443",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -360,
+        220
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Step 3. Feed into Agent Pipeline\n",
+        "height": 492.4668447935363,
+        "width": 332.87733508600377,
+        "color": 7
+      },
+      "id": "8b3560db-9462-41e7-9559-20cc6ee60957",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        280,
+        580
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Step 4. Research Competitor \n",
+        "height": 140,
+        "width": 688,
+        "color": 7
+      },
+      "id": "4335b9e4-34d5-4b45-86ec-affd12019722",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        980
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Step 2. Make a List of the top competitors",
+        "height": 775.191233831828,
+        "width": 849.3810544357925,
+        "color": 7
+      },
+      "id": "089ed92a-c5ef-4180-9a37-11dcdbffce31",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        180,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "contents",
+              "value": "{{ { \"text\": false } }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "sonar"
+            },
+            {
+              "name": "messages[0].role",
+              "value": "system"
+            },
+            {
+              "name": "messages[0].content",
+              "value": "=<prompt>\n\nRole: You are a competitor analysis expert. You are a concise and always provide answers in the exact format requested. Your task is to identify 6 competitors within the exact industry of {{ $json['What industry does the client operate in?'] }}. \nProvide only the names of the 6 competitors, with no additional information at all.\n\nAction:\n\nResearch the client,{{ $json['Who is the client? '] }} , website {{ $json.Website }} and the industry, {{ $json['What industry does the client operate in?'] }}.\n\nIdentify the 6 competitors that are directly operating in the same industry as the client {{ $json['Who is the client? '] }}. These competitors should be either large companies with significant market share or emerging startups entering or planning to enter this specific industry.\n\nFocus exclusively on companies that are part of the {{ $json['What industry does the client operate in?'] }} industry. Exclude any companies from other industries or unrelated sectors.\n\nLimit your search to companies within the same market or region as specified by {{ $json['What specific region or demographic should I focus on?'] }}.\n\nOutput Rules:\n1. Provide only 6  names of competitors, separated by commas. Do not exceed 6\n2. Do not include any additional text, commentary, or welcome statements. Do not give any additional text.\n3. If no competitors are found, return \"null\" without any extra information.\n\n\nOutput Format:\nCompetitor 1, Competitor 2, Competitor 3, Competitor 4, Competitor 5, Competitor 6\n\n\n\n</prompt>"
+            },
+            {
+              "name": "messages[1].role",
+              "value": "user"
+            },
+            {
+              "name": "messages[1].content",
+              "value": "{{$node['Chat Trigger'].json.messages.content}}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        280
+      ],
+      "id": "5306a3a2-d4c9-4d53-a8c8-b25442c5d34f",
+      "name": "perplexity info1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.exa.ai/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "client_name",
+              "value": "="
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "=<prompt>\n\nRole: You are a competitor analysis expert. You are a concise and always provide answers in the exact format requested. You also do not include the name of the client in the result. Your task is to identify 6 competitors within the exact industry of {{ $json['What industry does the client operate in?'] }}. \nProvide only the names of the 6 competitors, with no additional information at all.\nPlease note that you do not include the name of the client. \n\n\nResearch our client {{ $json['Who is the client? '] }}\nHere is some information available about the client:\nwebsite {{ $json.Website }} \nthe industry, {{ $json['What industry does the client operate in?'] }}\nregion of operation {{ $json['What specific region or demographic should I focus on?'] }} \nsome information about the client : {{ $json['Information about the client that we have right now?'] }} \nand it's unique value proposition : {{ $json['What differentiators or value proposition, if any, does the client have that I should focus details of my analysis on?'] }} \nit's currently focussed on the following customer: {{ $json['Who is the customer the company is currently focused on? '] }}\n\n\nAction:\n\nNow based on the information and your research:\n\nIdentify the 6 competitors that are directly operating in the same industry as the client {{ $json['Who is the client? '] }}. These competitors should be either large companies with significant market share or emerging startups entering or planning to enter this specific industry. \nFocus exclusively on companies that are part of the {{ $json['What industry does the client operate in?'] }} industry. Exclude any companies from other industries or unrelated sectors.\n\nLimit your search to companies within the same market or region as specified by {{ $json['What specific region or demographic should I focus on?'] }}.\n\nOutput Rules:\n1. Provide only 6  names of competitors, separated by commas. Do not exceed 6\n2. Do not include any additional text, commentary, or welcome statements. Do not give any additional text.\n3. If no competitors are found, return \"null\" without any extra information.\n\n\nOutput Format:\nCompetitor 1, Competitor 2, Competitor 3, Competitor 4, Competitor 5, Competitor 6\n\nImportant Note: Do not include the client company ({{ $json['Who is the client? '] }}) in the list of competitors under any circumstances.\n\n</prompt>\n"
+            },
+            {
+              "name": "type",
+              "value": "auto"
+            },
+            {
+              "name": "results.text",
+              "value": "="
+            },
+            {
+              "name": "category",
+              "value": "company"
+            },
+            {
+              "name": "system_message",
+              "value": "You are a competitor analysis expert who is an expert in finding competitors of companies. You are concise and always provide answers in the exact format requested. Ypu provide only the names of the competitors without any additional information."
+            },
+            {
+              "name": "fields",
+              "value": "results.title"
+            },
+            {
+              "name": "numResults",
+              "value": "={{6}}"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8511404-33ab-400f-adaf-967dd9ccf819",
+      "name": "Competitor Search via Exa.ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -400,
+        460
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "EXA AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log the entire input\nconsole.log(\"Input JSON:\", JSON.stringify($json, null, 2));\n\n// Try to access content from different possible locations\nlet content = $json.content || $json.choices?.[0]?.content || '';\n\n// Log the content we found\nconsole.log(\"Content found:\", content);\n\n// If content is still empty, try to find it in the entire JSON structure\nif (!content) {\n  const findContent = (obj) => {\n    for (let key in obj) {\n      if (key === 'content' && typeof obj[key] === 'string') {\n        return obj[key];\n      } else if (typeof obj[key] === 'object') {\n        const found = findContent(obj[key]);\n        if (found) return found;\n      }\n    }\n    return null;\n  };\n  content = findContent($json) || '';\n  console.log(\"Content found after deep search:\", content);\n}\n\n// Split the content and trim whitespace\nconst competitors = content.split(',').map(name => name.trim()).filter(Boolean);\n\n// Log the result\nconsole.log(\"Competitors array:\", competitors);\n\n// Return the result\nreturn {\n  json: {\n    competitors,\n    originalContent: content\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        220
+      ],
+      "id": "17ec414d-f7d7-431c-bbbe-842b03ad1bca",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a7261c19-ac6b-4612-888b-4e20c437fca3",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        720,
+        720
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "sonar"
+            },
+            {
+              "name": "messages[0].role",
+              "value": "system"
+            },
+            {
+              "name": "messages[0].content",
+              "value": "=You are a research agent tasked to conduct detailed research on companies.\nFocus your research on the industry: {{ $('On form submission').item.json['What industry does the client operate in?'] }} for the company {{ $('Competitor Search via Exa.ai').item.json.results[0] }}\n\nResearch Instructions:\n\nRead the company website as well as supplement findings with credible external sources.\n\nPresent findings in a clear, structured format with headings for each section below.\n\nIf information is unavailable, state “Not found” for that item.\n\n\nProduct/Service Overview\n\nDetails: Provide the number, type, and description of products or services offered by the company.\nFocus: Ensure information covers the scope and variety of products/services available in the market.. Focus on the client’s specific market ({{ $('On form submission').item.json['What industry does the client operate in?'] }})to ensure you are looking at comparing appropriate products and services.\n\n\n\nProduct Features\nDetails: Describe the features of each product or service , including aspects such as:\nTechnology: The underlying technology powering the product.\nFunctionality: How the product operates and serves its intended purpose.\nProcess: The process involved in delivering or utilizing the product/service.\nFocus: Highlight distinguishing features that define the product’s performance and benefits.\nBenefits: The value the product generates for its customers, and users. Tell me if the customer and user are different.\n\nPricing Information\nDetails: Provide comprehensive pricing information for each product/service, including:\nPrice range (if available).\nAny pricing tiers or variations (e.g., subscription models, one-time fees, etc.).\nFocus: Ensure pricing is accurate, up-to-date, and detailed across different markets or versions of the product.\nIf you can find any other information about the competitor such as annual revenues, year-over-year growth, CAGR, or market share (in percentage or in dollars), please include this information as well.\n\nUnique Value Proposition (UVP)\nDetails: Analyze and describe the unique value proposition (UVP) of each product or service:\nWhat makes this product/service stand out in the market?\nWhat problem does it solve uniquely compared to competitors?\nKey benefits or advantages offered to customers.\nFocus: Emphasize the uniqueness and differentiation that defines the product’s appeal in its market segment.\n\n\nYou are looking at a list of companies in the domain/industry of {{ $('On form submission').item.json['What industry does the client operate in?'] }}\nYou are tasked to find the products and features of the products released by the competitor.\n{{ $json.results }}\n</prompt>\nProduct/Service Overview\n\nDetails: Provide the number, type, and description of products or services offered by the company.\nFocus: Ensure information covers the scope and variety of products/services available in the market.. Focus on the client’s specific market ({{ $('On form submission').item.json['What industry does the client operate in?'] }})to ensure you are looking at comparing appropriate products and services.\n\n\nProduct Features\nDetails: Describe the features of each product or service , including aspects such as:\nTechnology: The underlying technology powering the product.\nFunctionality: How the product operates and serves its intended purpose.\nProcess: The process involved in delivering or utilizing the product/service.\nFocus: Highlight distinguishing features that define the product’s performance and benefits.\nBenefits: The value the product generates for its customers, and users. Tell me if the customer and user are different.\n\nPricing Information\nDetails: Provide comprehensive pricing information for each product/service, including:\nPrice range (if available).\nAny pricing tiers or variations (e.g., subscription models, one-time fees, etc.).\nFocus: Ensure pricing is accurate, up-to-date, and detailed across different markets or versions of the product.\nIf you can find any other information about the competitor such as annual revenues, year-over-year growth, CAGR, or market share (in percentage or in dollars), please include this information as well.\n\nUnique Value Proposition (UVP)\nDetails: Analyze and describe the unique value proposition (UVP) of each product or service:\nWhat makes this product/service stand out in the market?\nWhat problem does it solve uniquely compared to competitors?\nKey benefits or advantages offered to customers.\nFocus: Emphasize the uniqueness and differentiation that defines the product’s appeal in its market segment.\n\n\nYou are looking at a list of companies in the domain/industry of {{ $('On form submission').item.json['What industry does the client operate in?'] }}\nYou are tasked to find the products and features of the products released by the competitor.\n{{ $json.results }}\n</prompt>"
+            },
+            {
+              "name": "messages[1].role",
+              "value": "user"
+            },
+            {
+              "name": "messages[1].content",
+              "value": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        1140
+      ],
+      "id": "9249c457-b089-41c0-ac42-eab127a58a70",
+      "name": "perplexity info",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Perplexity API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "=Find the latest news from reputable sources about the company {{ $json.url }}  in the {{ $('On form submission').item.json['What industry does the client operate in?'] }} industry focused on their products and features. Exclude news about other companies. \nProvide updates in detail about their recent tech innovation, product launches, feature improvements.\n\n"
+            },
+            {
+              "name": "search_depth",
+              "value": "advanced"
+            },
+            {
+              "name": "topic",
+              "value": "news"
+            },
+            {
+              "name": "max_results",
+              "value": "10"
+            },
+            {
+              "name": "include_answer",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        1260
+      ],
+      "id": "52a0f02f-bef3-41c9-ba17-fdf5990cb99f",
+      "name": "tavily search",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Your task is to summarize in detail the information gathered about {{ $('On form submission').item.json['What industry does the client operate in?'] }} industry from{{ $('perplexity info').item.json.choices[0].message.content }} , {{ $('tavily search').item.json.results }} and {{ $('tavily search').item.json.answer }} into a clear, concise, and easy-to-digest format. Avoid unnecessary repetition and ensure readability.\n\n1: News Summarization\nProvide in detail the latest news for company {{ $json['Company Urls'] }}\n using the information from Tavilly. Provide a brief, well-structured paragraph for it covering all the points.\nHere's the information gathered from tavilly :{{ $json['Tavily output'] }}\n\n\n 2: Company Analysis Summarization\nSummarize the insights for the company {{ $json['Company Urls'] }}from Perplexity {{ $('perplexity info').item.json.choices[0].message.content }}, covering:\n\nProduct Features: Key offerings, technology, and functionality.\nPricing Analysis: Give details about the Pricing model, affordability, and any promotional strategies.\nUnique Value Proposition (UVP): Give details about What makes the company stand out, how it solves customer pain points, and its competitive edge.\nThe format of company analysis summarization should be a detailed, readable format, preferrably in bullets where applicable.\n\nOutput format:\nThe output should have\n1. news summarization\n2. Company Analysis summarization\n   a. product features\n   b. pricing analysis\n   c. Unique Value proposition",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an AI summariser working to summarise a company analysis. "
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1500,
+        1380
+      ],
+      "id": "57d90dd2-e9bc-46b5-a9b3-350c64b8c4b5",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        1520
+      ],
+      "id": "ba6614d2-6512-43b7-99d2-40e43be60b2b",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1220,
+        1180
+      ],
+      "id": "599241c9-4c58-4119-8a9c-103adfb1e7f1",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f1174bd-2d09-4f84-a705-7a7484909387",
+              "name": "perplexity output",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            },
+            {
+              "id": "9e2daa67-3dc6-42bc-93fd-5e7961929ee1",
+              "name": "Tavily output",
+              "value": "={{ $json.answer }}",
+              "type": "string"
+            },
+            {
+              "id": "54f7377d-0c6d-4bd2-92be-0c4c872c8a0a",
+              "name": "Company Urls",
+              "value": "={{ $('Results to List').item.json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        1180
+      ],
+      "id": "cd5db905-fb93-462b-886a-3e640f174a68",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "formTitle": "Questions",
+        "formDescription": "=form test",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Website"
+            },
+            {
+              "fieldLabel": "Who is the client? ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Information about the client that we have right now?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What does client want to focus on specifically?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What industry does the client operate in?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Who is the customer the company is currently focused on? "
+            },
+            {
+              "fieldLabel": "What specific region or demographic should I focus on?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What differentiators or value proposition, if any, does the client have that I should focus details of my analysis on?"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": true,
+          "buttonLabel": "Begin",
+          "path": "competitor-analysis",
+          "ignoreBots": true
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -620,
+        460
+      ],
+      "id": "7f16657e-488b-44d9-bca1-0f94051ebdad",
+      "name": "On form submission",
+      "webhookId": "4f8faf00-d3a6-41e6-bee7-e0c8a67da7db",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "content": "## Step 5. Collect Results and Send to Word\n\n\nFinally, once the agent's have completed their tasks successfully, we compiled a competitor report and insert it as a new table in word5",
+        "height": 572.5257167828777,
+        "width": 529.1065295866968,
+        "color": 7
+      },
+      "id": "7ff51085-afbf-4b1c-b302-a6959032a6a5",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1180,
+        1020
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "https://docs.google.com/document/d/1J7VXJaARU1Oeh2GujE3QHhJenWvgbntQ8vsDaLigpyM/edit?tab=t.0",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=\n{{ $json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3020,
+        1380
+      ],
+      "id": "4e810f60-3886-42c2-9284-46d45d18d5d6",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        0,
+        220
+      ],
+      "id": "7e7b2e44-b222-4ace-bff6-de3f4f295f82",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = items[0].json.results; // Assuming your Exa AI results are in the first item\n\nconst extractedData = results.map(item => {\n  return {\n    id: item.id,\n    title: item.title,\n    url: item.url\n  };\n});\n\nreturn extractedData;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        460
+      ],
+      "id": "90502257-2e1c-40bc-be60-55fb5d79245a",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1qb2VmhbMYXlf0ROhqeQ7DrvsWFdyAtvqpGnqmk3Zb8g",
+          "mode": "list",
+          "cachedResultName": "Research agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qb2VmhbMYXlf0ROhqeQ7DrvsWFdyAtvqpGnqmk3Zb8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qb2VmhbMYXlf0ROhqeQ7DrvsWFdyAtvqpGnqmk3Zb8g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "News Summarization": "={{ $json.news_summarization }}",
+            "Product Features": "={{ $json.product_features }}",
+            "Pricing Analysis": "={{ $json.pricing_analysis }}",
+            "Unique Value propisition": "={{ $json.unique_value_proposition }}",
+            "Competitor ": "={{ $('Results to List').item.json.url }}"
+          },
+          "matchingColumns": [
+            "Competitor "
+          ],
+          "schema": [
+            {
+              "id": "Competitor ",
+              "displayName": "Competitor ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "News Summarization",
+              "displayName": "News Summarization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Features",
+              "displayName": "Product Features",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Pricing Analysis",
+              "displayName": "Pricing Analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Unique Value propisition",
+              "displayName": "Unique Value propisition",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2300,
+        1380
+      ],
+      "id": "a66d65f4-0a7d-4a5c-ac0a-62f7ef8e74f1",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputText = $input.first().json.text\n\n// Define section headers to look for\nconst sections = [\n  \"News Summarization\",\n  \"Company Analysis Summarization\",\n  \"Product Features\",\n  \"Pricing Analysis\",\n  \"Unique Value Proposition (UVP)\"\n];\n\n// Create an object to hold extracted sections\nlet extracted = {};\nlet currentSection = null;\nlet buffer = \"\";\n\n// Split into lines for easier parsing\nconst lines = inputText.split(\"\\n\");\n\n// Loop through lines\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (sections.includes(trimmed.replace(/\\*\\*/g, \"\"))) {\n    // Save previous section if any\n    if (currentSection) {\n      extracted[currentSection] = buffer.trim();\n    }\n    currentSection = trimmed.replace(/\\*\\*/g, \"\");\n    buffer = \"\";\n  } else {\n    buffer += line + \"\\n\";\n  }\n}\n\n// Save the last section\nif (currentSection) {\n  extracted[currentSection] = buffer.trim();\n}\n\n// Return the result as JSON (one item with each section as a field)\nreturn [\n  {\n    json: {\n      news_summarization: extracted[\"News Summarization\"] || \"\",\n      product_features: extracted[\"Product Features\"] || \"\",\n      pricing_analysis: extracted[\"Pricing Analysis\"] || \"\",\n      unique_value_proposition: extracted[\"Unique Value Proposition (UVP)\"] || \"\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        1380
+      ],
+      "id": "3419f540-4a2d-4d1c-ab41-45ca16393631",
+      "name": "Code2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Results to List": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "perplexity info1": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "perplexity info",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "tavily search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tavily search": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "perplexity info": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Competitor Search via Exa.ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Competitor Search via Exa.ai": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Results to List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        []
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        []
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ae8f14a3-8029-484c-81e1-908d950adcc1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55339d095d631bea376f399677afae9ef8f385b9834a89c2170054d8b6dd6f70"
+  },
+  "id": "X6ITteq9GU0hte2X",
+  "tags": []
+}
